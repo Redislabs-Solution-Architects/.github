@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import datetime
+from datetime import UTC, datetime
 
 from dotenv import load_dotenv
 
@@ -50,7 +50,7 @@ def main() -> None:
                 text=payload["text"],
                 timestamp=datetime.fromisoformat(payload["timestamp"])
                 if payload.get("timestamp")
-                else datetime.utcnow(),
+                else datetime.now(UTC),
                 source=payload.get("source", "manual"),
             )
         else:
