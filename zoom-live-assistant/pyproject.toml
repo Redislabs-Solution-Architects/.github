@@ -1,0 +1,37 @@
+[project]
+name = "zoom-live-assistant"
+version = "0.1.0"
+description = "Real-time Zoom transcript assistant powered by OpenAI"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi",
+    "httpx",
+    "openai",
+    "pydantic-settings",
+    "python-dotenv",
+    "uvicorn[standard]",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[project.scripts]
+zoom-live-assistant-cli = "zoom_live_assistant.cli:main"
+zoom-live-assistant-api = "zoom_live_assistant.api:run"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
