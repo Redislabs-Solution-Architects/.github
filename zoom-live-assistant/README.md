@@ -35,6 +35,8 @@ MIN_QUESTION_LENGTH=12
 MAX_CONTEXT_MESSAGES=30
 API_HOST=0.0.0.0
 API_PORT=8080
+ZOOM_WEBHOOK_SECRET=your_zoom_webhook_secret
+VERIFY_ZOOM_SIGNATURES=true
 ```
 
 ### 3) Run API mode
@@ -52,6 +54,24 @@ curl -X POST "http://localhost:8080/ingest" \
     "speaker":"customer",
     "text":"Can you explain how your pricing scales with usage?",
     "source":"zoom"
+  }'
+```
+
+Or send a Zoom webhook envelope:
+
+```bash
+curl -X POST "http://localhost:8080/zoom/webhook" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "event":"meeting.transcript_received",
+    "event_ts":1739923528123,
+    "payload":{
+      "content":{
+        "transcript_segments":[
+          {"user_name":"customer","text":"Can you explain your pricing model?"}
+        ]
+      }
+    }
   }'
 ```
 
@@ -91,6 +111,31 @@ Common production pattern:
 - Zoom transcript source -> your "bridge" service
 - Bridge sends each transcript line to `POST /ingest`
 - On non-null `answer`, display in desktop overlay or private chat panel
+
+Concrete Zoom webhook path supported in this project:
+
+- Set Zoom Event Notification endpoint to: `https://<your-domain>/zoom/webhook`
+- Supports Zoom challenge event `endpoint.url_validation`
+- Supports signature verification via `x-zm-signature` and `x-zm-request-timestamp`
+- Parses transcript payload variants from:
+  - `payload.content.transcript_segments[]`
+  - `payload.content.text` / `payload.content.transcript`
+  - `payload.object.transcript[]` / `payload.object.transcript_entries[]`
+  - `payload.object.text`
+
+### Desktop overlay UI
+
+Run the overlay window (always on top) to see answers instantly:
+
+```bash
+zoom-live-assistant-overlay --ws-url ws://127.0.0.1:8080/ws/answers
+```
+
+How it works:
+
+- API publishes each generated answer to websocket endpoint `ws://.../ws/answers`
+- Overlay subscribes and updates question + suggested answer in near-real-time
+- Use this while you are on a call; keep human-in-the-loop and read/adjust responses
 
 You can build the bridge with:
 

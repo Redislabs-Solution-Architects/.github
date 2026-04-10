@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     min_question_length: int = Field(default=12, alias="MIN_QUESTION_LENGTH")
     api_host: str = Field(default="0.0.0.0", alias="API_HOST")
     api_port: int = Field(default=8080, alias="API_PORT")
+    zoom_webhook_secret: str = Field(default="", alias="ZOOM_WEBHOOK_SECRET")
+    verify_zoom_signatures: bool = Field(default=True, alias="VERIFY_ZOOM_SIGNATURES")
 
     model_config = SettingsConfigDict(
         env_file=".env",

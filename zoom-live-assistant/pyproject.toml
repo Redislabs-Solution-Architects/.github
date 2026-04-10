@@ -10,6 +10,7 @@ dependencies = [
     "openai",
     "pydantic-settings",
     "python-dotenv",
+    "websocket-client",
     "uvicorn[standard]",
 ]
 
@@ -25,6 +26,7 @@ testpaths = ["tests"]
 [project.scripts]
 zoom-live-assistant-cli = "zoom_live_assistant.cli:main"
 zoom-live-assistant-api = "zoom_live_assistant.api:run"
+zoom-live-assistant-overlay = "zoom_live_assistant.overlay:main"
 
 [build-system]
 requires = ["setuptools>=68", "wheel"]
